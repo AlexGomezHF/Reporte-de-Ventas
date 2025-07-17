@@ -1,6 +1,3 @@
-# Re-run after code state reset: regenerate the HTML file with user-provided iframe and credentials
-
-html_cleaned = """
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,12 +5,14 @@ html_cleaned = """
   <title>Power BI Dashboard Access</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f0f0f0;
-      padding: 20px;
+    html, body {
       margin: 0;
+      padding: 0;
+      overflow: auto;
+      background: #fff;
+      font-family: Arial, sans-serif;
     }
+
     #login {
       max-width: 350px;
       margin: 100px auto;
@@ -22,15 +21,19 @@ html_cleaned = """
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
+
     #dashboard {
       display: none;
-      margin-top: 20px;
+      padding: 20px;
     }
+
     iframe {
       width: 100%;
-      height: 1000px;
+      height: 100vh;
+      min-height: 1000px;
       border: none;
     }
+
     input {
       width: 100%;
       padding: 10px;
@@ -38,6 +41,7 @@ html_cleaned = """
       border: 1px solid #ccc;
       border-radius: 4px;
     }
+
     button {
       width: 100%;
       padding: 10px;
@@ -47,9 +51,11 @@ html_cleaned = """
       border-radius: 4px;
       cursor: pointer;
     }
+
     button:hover {
       background-color: #005fa3;
     }
+
     #error {
       color: red;
     }
@@ -67,7 +73,7 @@ html_cleaned = """
 
 <div id="dashboard">
   <h2>Nomina Extras Dashboard</h2>
-  <iframe title="NominaExtras(REP)" src="https://app.powerbi.com/view?r=eyJrIjoiZWUwY2Y5MGItYzE0OC00YjZiLWFkMjctNjYxODg4MWRlOTFiIiwidCI6ImUxNTVjMjNkLTRhYjgtNDA5Zi05MmExLWNhNzE1MGM3NzdjMiJ9" allowFullScreen="true"></iframe>
+  <iframe id="powerbiFrame" title="NominaExtras(REP)" src="https://app.powerbi.com/view?r=eyJrIjoiZWUwY2Y5MGItYzE0OC00YjZiLWFkMjctNjYxODg4MWRlOTFiIiwidCI6ImUxNTVjMjNkLTRhYjgtNDA5Zi05MmExLWNhNzE1MGM3NzdjMiJ9" allowfullscreen="true"></iframe>
 </div>
 
 <script>
@@ -78,8 +84,18 @@ html_cleaned = """
     const u = document.getElementById("username").value;
     const p = document.getElementById("password").value;
     if (u === USER && p === PASS) {
+      const dashboard = document.getElementById("dashboard");
+      dashboard.style.display = "block";
+
+      // Force iframe to reload after visibility for layout fix
+      setTimeout(() => {
+        const iframe = document.getElementById("powerbiFrame");
+        const src = iframe.src;
+        iframe.src = "";
+        iframe.src = src;
+      }, 100);
+      
       document.getElementById("login").style.display = "none";
-      document.getElementById("dashboard").style.display = "block";
     } else {
       document.getElementById("error").textContent = "Incorrect username or password.";
     }
@@ -88,11 +104,3 @@ html_cleaned = """
 
 </body>
 </html>
-"""
-
-# Save to file
-file_path = "/mnt/data/powerbi_dashboard_secure.html"
-with open(file_path, "w") as f:
-    f.write(html_cleaned)
-
-file_path
