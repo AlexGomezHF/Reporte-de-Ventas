@@ -1,0 +1,46 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Private Power BI Dashboard</title>
+  <style>
+    body { font-family: sans-serif; padding: 2em; background: #f0f0f0; }
+    #login { max-width: 300px; margin: auto; background: white; padding: 1em; border-radius: 8px; }
+    #dashboard { display: none; margin-top: 20px; }
+    iframe { width: 100%; height: 600px; border: none; }
+  </style>
+</head>
+<body>
+
+<div id="login">
+  <h2>Login</h2>
+  <input type="text" id="username" placeholder="Username"><br><br>
+  <input type="password" id="password" placeholder="Password"><br><br>
+  <button onclick="login()">Login</button>
+  <p id="error" style="color:red;"></p>
+</div>
+
+<div id="dashboard">
+  <h2>Welcome to the Dashboard</h2>
+  <iframe src="https://app.powerbi.com/view?r=REPLACE_WITH_YOUR_EMBED_URL" allowfullscreen></iframe>
+</div>
+
+<script>
+  const USER = "boss";
+  const PASS = "secure123";
+
+  function login() {
+    const u = document.getElementById("username").value;
+    const p = document.getElementById("password").value;
+    if (u === USER && p === PASS) {
+      document.getElementById("login").style.display = "none";
+      document.getElementById("dashboard").style.display = "block";
+    } else {
+      document.getElementById("error").textContent = "Incorrect login.";
+    }
+  }
+</script>
+
+</body>
+</html>
